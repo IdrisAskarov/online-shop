@@ -1,12 +1,12 @@
 package com.codergm.productservice.service;
 
 import com.codergm.productservice.entity.Product;
+import com.codergm.productservice.exception.ProductServiceCustomException;
 import com.codergm.productservice.model.ProductRequest;
 import com.codergm.productservice.model.ProductResponse;
 import com.codergm.productservice.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.beans.BeanUtils.copyProperties;
@@ -36,9 +36,11 @@ public class ProductServiceImpl implements ProductService {
     public ProductResponse findProductById(Long id) {
         log.info("Get the product for productId: {}", id);
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException(""));
+                .orElseThrow(()
+                        -> new ProductServiceCustomException("Product with id " + id + " not found",
+                        "PRODUCT_NOT_FOUND"));
         ProductResponse response = new ProductResponse();
-        copyProperties(product,response);
+        copyProperties(product, response);
         return response;
     }
 }
