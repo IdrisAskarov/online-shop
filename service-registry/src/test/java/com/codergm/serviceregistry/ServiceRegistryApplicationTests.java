@@ -1,13 +1,13 @@
-package com.codergm.productservice;
+package com.codergm.serviceregistry;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ProductServiceApplicationTests {
+class ServiceRegistryApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
+	@Test
+	void contextLoads() {
+	}
 
 }
