@@ -1,0 +1,20 @@
+server:
+  port: 9296
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/IdrisAskarov/online-shop
+          clone-on-start: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      domain-zone: http://{EUREKA_SERVER_ADDRESS:localhost:6761/eureka}
