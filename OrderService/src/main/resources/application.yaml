@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: order-service
+  config:
+    import: configserver:http://localhost:9296
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOST:localhost}:5432/online-shop
