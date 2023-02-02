@@ -5,4 +5,4 @@ eureka:
     fetch-registry: true
     register-with-eureka:  true
     service-url:
-      domain-zone: http://${EUREKA_SERVER_ADDRESS:locahost:8761/eureka}
+      domain-zone: http://${EUREKA_SERVER_ADDRESS:locahost:8766/eureka}
