@@ -21,4 +21,14 @@ public class OrderResponseEntityExceptionHandler extends ResponseEntityException
                 .errorCode(orderException.getErrorCode())
                 .build());
     }
+
+    @ExceptionHandler(ProductServiceCustomException.class)
+    public ResponseEntity<ErrorMessage> productExceptionHandler(ProductServiceCustomException exception){
+        return status(HttpStatus.NOT_FOUND)
+                .body(ErrorMessage.builder()
+                        .errorCode(exception.getErrorCode())
+                        .errorMessage(exception.getMessage())
+                        .build());
+    }
+
 }
