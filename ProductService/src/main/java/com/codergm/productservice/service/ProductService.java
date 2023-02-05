@@ -7,4 +7,6 @@ public interface ProductService {
     long addProduct(com.codergm.productservice.model.ProductRequest productRequest);
 
     ProductResponse findProductById(Long id);
+
+    void reduceQuantity(Long productId, Integer quantity);
 }
