@@ -14,7 +14,7 @@ import java.time.Instant;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionDetail {
+public class TransactionDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trans_det_seq")
