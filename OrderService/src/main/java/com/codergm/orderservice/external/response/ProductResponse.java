@@ -1,4 +1,4 @@
-package com.codergm.orderservice.model;
+package com.codergm.orderservice.external.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

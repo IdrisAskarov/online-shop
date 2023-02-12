@@ -1,6 +1,6 @@
 package com.codergm.orderservice.external.client;
 
-import com.codergm.orderservice.model.PaymentRequest;
+import com.codergm.orderservice.external.request.PaymentRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

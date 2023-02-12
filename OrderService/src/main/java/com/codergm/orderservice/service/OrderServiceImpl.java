@@ -6,10 +6,10 @@ import com.codergm.orderservice.entity.Order;
 import com.codergm.orderservice.exception.OrderException;
 import com.codergm.orderservice.external.client.PaymentService;
 import com.codergm.orderservice.external.client.ProductService;
-import com.codergm.orderservice.model.OrderRequest;
-import com.codergm.orderservice.model.OrderResponse;
-import com.codergm.orderservice.model.PaymentRequest;
-import com.codergm.orderservice.model.ProductResponse;
+import com.codergm.orderservice.external.request.PaymentRequest;
+import com.codergm.orderservice.external.response.PaymentResponse;
+import com.codergm.orderservice.external.response.ProductResponse;
+import com.codergm.orderservice.model.*;
 import com.codergm.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -75,11 +75,18 @@ public class OrderServiceImpl implements OrderSevice {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new OrderException("Order By orderID"+orderId+" not found","ORDER_NOT_FOUND"));
         log.info("Invoking Product Service to fetch the product for id: {}"+orderId);
-        ProductResponse producerResponse =
+        ProductResponse productResponse =
                 restTemplate.getForObject("http://PRODUCT-SERVICE/product/"+order.getProductId(),
                         ProductResponse.class);
         OrderResponse.ProductDetails productDetails = new OrderResponse.ProductDetails();
-        BeanUtils.copyProperties(producerResponse,productDetails);
+        BeanUtils.copyProperties(productResponse,productDetails);
+
+        log.info("Getting payment information from the payment service");
+        PaymentResponse paymentResponse = restTemplate.getForObject("http://payment-service/payment/order/"+orderId,
+                PaymentResponse.class);
+        OrderResponse.PaymentDetails paymentDetails = new OrderResponse.PaymentDetails();
+
+        BeanUtils.copyProperties(paymentResponse,paymentDetails);
         OrderResponse orderResponse =
                 OrderResponse.builder()
                         .orderId(orderId)
@@ -87,6 +94,7 @@ public class OrderServiceImpl implements OrderSevice {
                         .amount(order.getAmount())
                         .orderDate(order.getOrderDate())
                         .productDetails(productDetails)
+                        .paymentDetails(paymentDetails)
                         .build();
         return orderResponse;
     }

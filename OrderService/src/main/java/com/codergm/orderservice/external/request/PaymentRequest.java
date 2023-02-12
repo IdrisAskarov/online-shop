@@ -1,5 +1,6 @@
-package com.codergm.orderservice.model;
+package com.codergm.orderservice.external.request;
 
+import com.codergm.orderservice.model.PaymentMode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
