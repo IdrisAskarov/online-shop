@@ -6,7 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
 import org.springframework.cloud.client.circuitbreaker.Customizer;
+import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
 import org.springframework.context.annotation.Bean;
+import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 
@@ -19,6 +21,10 @@ public class CloudGatewayApplication {
 	}
 
 	@Bean
+	KeyResolver userKeyResolver(){
+		return exchange -> Mono.just("userKey");
+	}
+	@Bean
 	public Customizer<Resilience4JCircuitBreakerFactory> defaultCustomizer(){
 		return factory -> factory.configureDefault(
 				id -> new Resilience4JConfigBuilder(id)
@@ -30,8 +36,10 @@ public class CloudGatewayApplication {
 										.slowCallDurationThreshold(Duration.ofSeconds(2))
 										.permittedNumberOfCallsInHalfOpenState(3)
 										.minimumNumberOfCalls(5)
-										.slidingWindowType(CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
+										.slidingWindowType(CircuitBreakerConfig.SlidingWindowType.COUNT_BASED)
 										.slidingWindowSize(5)
+										.automaticTransitionFromOpenToHalfOpenEnabled(true)
+										.permittedNumberOfCallsInHalfOpenState(3)
 										.build()
 						).build()
 		);

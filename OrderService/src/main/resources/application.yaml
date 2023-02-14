@@ -19,11 +19,15 @@ spring:
       hibernate:
         default_schema: orderdb
 
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    fetch-registry: true
-#    register-with-eureka: true
-#    service-url:
-#      domain-zone: http://{EUREKA_SERVER_ADDRESS:localhost:6761/eureka}
+resilience4j:
+  circuitbreaker:
+    instances:
+      external:
+        event-consumer-buffer-size: 10
+        failer-rate-threshold: 50
+        minimum-number-of-calls: 5
+        automatic-transition-from-open-to-half-open-enabled: true
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 3
+        sliding-windows-size: 10
+        sliding-windows-type: COUNT-BASED

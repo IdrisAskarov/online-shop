@@ -80,7 +80,7 @@ public class OrderServiceImpl implements OrderSevice {
                         ProductResponse.class);
         OrderResponse.ProductDetails productDetails = new OrderResponse.ProductDetails();
         BeanUtils.copyProperties(productResponse,productDetails);
-
+//
         log.info("Getting payment information from the payment service");
         PaymentResponse paymentResponse = restTemplate.getForObject("http://payment-service/payment/order/"+orderId,
                 PaymentResponse.class);
