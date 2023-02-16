@@ -18,6 +18,22 @@ spring:
     properties:
       hibernate:
         default_schema: orderdb
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-35001248.okta.com/oauth2/default
+      client:
+        registration:
+          internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oa8b7kgdzJeGHv1S5d7
+            client-secret: ObJYY5tMePknj4FXsIRF6qOiEKLv5saGH90QIldl
+        provider:
+          okta:
+            issuer-uri: https://dev-35001248.okta.com/oauth2/default
 
 resilience4j:
   circuitbreaker:
