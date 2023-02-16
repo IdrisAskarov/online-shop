@@ -5,6 +5,7 @@ import com.codergm.productservice.model.ProductResponse;
 import com.codergm.productservice.service.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -19,12 +20,14 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PreAuthorize("hasAuthority('Admin')")
     @PostMapping("")
     public ResponseEntity<Long> addProduct(@RequestBody ProductRequest productRequest) {
         long productId = productService.addProduct(productRequest);
         return status(HttpStatus.CREATED).body(productId);
     }
 
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer') || hasAuthority('SCOPE_internal')")
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Long id) {
         ProductResponse productResponse = productService.findProductById(id);

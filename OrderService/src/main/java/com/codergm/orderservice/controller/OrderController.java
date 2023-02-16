@@ -7,6 +7,7 @@ import com.codergm.orderservice.service.OrderSevice;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.ResponseEntity.status;
@@ -22,6 +23,7 @@ public class OrderController {
         this.orderSevice = orderSevice;
     }
 
+    @PreAuthorize("hasAuthority('Customer')")
     @PostMapping("/place-order")
     public ResponseEntity<Long> placeOrder(@RequestBody OrderRequest orderRequest) {
         log.info("create a new order");
@@ -30,6 +32,7 @@ public class OrderController {
         return status(HttpStatus.CREATED).body(orderId);
     }
 
+    @PreAuthorize("hasAuthority('Admin') || hasAuthority('Customer')")
     @GetMapping("/{id}")
     public ResponseEntity<OrderResponse> getOrderDetailsById(@PathVariable("id") Long orderId) {
         OrderResponse orderResponse = orderSevice.getOrderDetails(orderId);
