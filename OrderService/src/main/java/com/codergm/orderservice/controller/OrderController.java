@@ -1,6 +1,5 @@
 package com.codergm.orderservice.controller;
 
-import com.codergm.orderservice.entity.Order;
 import com.codergm.orderservice.model.OrderRequest;
 import com.codergm.orderservice.model.OrderResponse;
 import com.codergm.orderservice.service.OrderSevice;

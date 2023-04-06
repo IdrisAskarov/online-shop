@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import java.io.IOException;
 
 @Configuration
-public class RestTemplateInterceptor implements ClientHttpRequestInterceptor {
+public class RestTemplateInterceptor  implements ClientHttpRequestInterceptor{
 
     private final OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;
 

@@ -16,7 +16,7 @@ public interface ProductService {
     ResponseEntity<Void> reduceQuantity(@PathVariable("id") Long productId,
                                                @RequestParam Integer quantity);
 
-    default void fallback(Exception e){
+    default ResponseEntity<Void>  fallback(Long productId, Integer quantity, Exception e){
         throw  new OrderException("Product Service is not available","INTERNAL_SERVER_ERROR");
     }
 

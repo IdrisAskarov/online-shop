@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
 @Configuration
-public class OAuthRequestInterceptor implements RequestInterceptor {
+public class OAuthRequestInterceptor  implements RequestInterceptor{
 
     private final OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;
 

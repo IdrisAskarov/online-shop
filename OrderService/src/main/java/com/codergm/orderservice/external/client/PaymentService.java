@@ -15,7 +15,7 @@ public interface PaymentService {
     @PostMapping("")
     ResponseEntity<Long> doPayment(@RequestBody PaymentRequest paymentRequest);
 
-    default void fallback(Exception e){
+    default ResponseEntity<Long> fallback(PaymentRequest paymentRequest, Exception e){
         throw  new OrderException("Payment Service is not available","INTERNAL_SERVER_ERROR");
     }
 }
