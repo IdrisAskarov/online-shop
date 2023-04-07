@@ -2,7 +2,7 @@ package com.codergm.orderservice.controller;
 
 import com.codergm.orderservice.model.OrderRequest;
 import com.codergm.orderservice.model.OrderResponse;
-import com.codergm.orderservice.service.OrderSevice;
+import com.codergm.orderservice.service.OrderService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import static org.springframework.http.ResponseEntity.status;
 @Log4j2
 public class OrderController {
 
-    private final OrderSevice orderSevice;
+    private final OrderService orderSevice;
 
-    public OrderController(OrderSevice orderSevice) {
+    public OrderController(OrderService orderSevice) {
         this.orderSevice = orderSevice;
     }
 

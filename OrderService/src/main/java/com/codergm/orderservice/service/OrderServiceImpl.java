@@ -22,7 +22,7 @@ import java.time.Instant;
 @Service
 @Log4j2
 @RequiredArgsConstructor
-public class OrderServiceImpl implements OrderSevice {
+public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;
@@ -38,12 +38,12 @@ public class OrderServiceImpl implements OrderSevice {
         Order order = Order
                 .builder()
                 .amount(orderRequest.getTotalAmount())
-                .orderStatus("CREATED")
+                .orderStatus(OrderStatus.PLACED.value)
                 .productId(orderRequest.getProductId())
                 .quantity(orderRequest.getQuantity())
                 .orderDate(Instant.now())
                 .build();
-        orderRepository.save(order);
+        order = orderRepository.save(order);
 
         log.info("Calling Payment Service to complete the payment");
 
@@ -55,11 +55,11 @@ public class OrderServiceImpl implements OrderSevice {
                     .paymentMode(orderRequest.getPaymentMode())
                     .amount(orderRequest.getTotalAmount())
                     .build());
-            log.info("Payment done Successfull. Changing the order status to PLACED");
-            orderStatus = "PLACED";
+            log.info("Payment done Successfully. Changing the order status to PLACED");
+            orderStatus = OrderStatus.PLACED.value;
         } catch (Exception e) {
-            log.error("Error occured in payment. Changing order status to PAYMENT_FAILED");
-            orderStatus = "PAYMENT_FAILED";
+            log.error("Error occurred in payment. Changing order status to PAYMENT_FAILED");
+            orderStatus = OrderStatus.PAYMENT_FAILED.value;
         }
 
         order.setOrderStatus(orderStatus);
