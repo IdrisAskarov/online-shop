@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 
 @Configuration
-public class OAuthRequestInterceptor  implements RequestInterceptor{
+public class OAuthRequestInterceptor implements RequestInterceptor {
 
     private final OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;
 
@@ -17,9 +17,9 @@ public class OAuthRequestInterceptor  implements RequestInterceptor{
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
-        requestTemplate.header("Authorization","Bearer "+
+        requestTemplate.header("Authorization", "Bearer " +
                 oAuth2AuthorizedClientManager
-                        .authorize(OAuth2AuthorizeRequest.withClientRegistrationId("internal-clien")
+                        .authorize(OAuth2AuthorizeRequest.withClientRegistrationId("internal-client")
                                 .principal("internal").build()).getAccessToken().getTokenValue());
     }
 }

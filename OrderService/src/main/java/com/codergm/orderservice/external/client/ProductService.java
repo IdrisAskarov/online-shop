@@ -17,6 +17,7 @@ public interface ProductService {
                                                @RequestParam Integer quantity);
 
     default ResponseEntity<Void>  fallback(Long productId, Integer quantity, Exception e){
+        e.printStackTrace();
         throw  new OrderException("Product Service is not available","INTERNAL_SERVER_ERROR");
     }
 
