@@ -3,6 +3,7 @@ package com.codergm.orderservice.controller;
 import com.codergm.orderservice.OrderServiceConfig;
 import com.codergm.orderservice.entity.Order;
 import com.codergm.orderservice.model.OrderRequest;
+import com.codergm.orderservice.model.OrderResponse;
 import com.codergm.orderservice.model.OrderStatus;
 import com.codergm.orderservice.model.PaymentMode;
 import com.codergm.orderservice.repository.OrderRepository;
@@ -13,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static java.nio.charset.Charset.defaultCharset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -112,14 +114,58 @@ public class OrderControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/order/place-order")
                 .contentType(APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(orderRequest))
-                .with(jwt().authorities(new SimpleGrantedAuthority("Admin"), new SimpleGrantedAuthority("Customer2")))
+                .with(jwt().authorities(new SimpleGrantedAuthority("Admin")))
         ).andExpect(MockMvcResultMatchers.status().isForbidden()).andReturn();
     }
 
     @Test
     @DisplayName("Get Order - Success")
     void test_WhenGetOrder_Success() throws Exception {
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("")).andReturn();
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/order/1")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("Admin"),
+                                new SimpleGrantedAuthority("Customer")))
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String actualResponse = mvcResult.getResponse().getContentAsString();
+        Order order = orderRepository.findById(1L).get();
+        String expectedResponse = getOrderResponse(order);
+
+        assertEquals(expectedResponse, actualResponse);
+    }
+    @Test
+    @DisplayName("Get Order - Fail, Order Not Found")
+    void testWhen_GetOrder_Order_Not_Found()throws Exception{
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/order/2")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("Admin"),
+                                new SimpleGrantedAuthority("Customer")))
+                        .contentType(APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andReturn();
+    }
+    private String getOrderResponse(Order order) throws IOException {
+        OrderResponse.PaymentDetails paymentDetails =
+                objectMapper.readValue(copyToString(OrderControllerTest.class
+                                .getClassLoader()
+                                .getResourceAsStream("mock/GetPayment.json"), defaultCharset()),
+                        OrderResponse.PaymentDetails.class);
+        OrderResponse.ProductDetails productDetails =
+                objectMapper.readValue(copyToString(OrderControllerTest.class
+                                .getClassLoader()
+                                .getResourceAsStream("mock/GetProduct.json"), defaultCharset()),
+                        OrderResponse.ProductDetails.class);
+
+        OrderResponse orderResponse = OrderResponse.builder()
+                .paymentDetails(paymentDetails)
+                .productDetails(productDetails)
+                .orderStatus(order.getOrderStatus())
+                .orderDate(order.getOrderDate())
+                .orderId(order.getId())
+                .amount(order.getAmount())
+                .build();
+
+        return objectMapper.writeValueAsString(orderResponse);
     }
 
     private OrderRequest getMockOrderRequest() {
@@ -147,7 +193,7 @@ public class OrderControllerTest {
                 OrderControllerTest.class
                         .getClassLoader()
                         .getResourceAsStream("mock/GetPayment.json"),
-                Charset.defaultCharset());
+                defaultCharset());
         StubMapping result = wireMockServer.stubFor(get(urlMatching("/payment/.*"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
@@ -168,7 +214,7 @@ public class OrderControllerTest {
                 OrderControllerTest.class
                         .getClassLoader()
                         .getResourceAsStream("mock/GetProduct.json"),
-                Charset.defaultCharset());
+                defaultCharset());
         wireMockServer.stubFor(get("/product/1")
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.OK.value())
