@@ -1,0 +1,68 @@
+version: '3'
+services:
+  serviceregistry:
+    image: 'codergm/serviceregistry:0.0.1'
+    container_name: serviceregistry
+    ports:
+      - '8762:8762'
+  configserver:
+    image: 'codergm/configserver:latest'
+    container_name: configserver
+    ports:
+      - '9296:9296'
+    environment: 
+      - EUREKA_SERVER_ADDRESS=serviceregistry:8762/eureka/
+    healthcheck:
+      test: ["CMD","curl","-f","http://configserver:9296/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on: 
+      - serviceregistry
+  cloudgateway:
+    image: 'coder2gm/cloudgateway:latest'
+    container_name: cloudgateway
+    ports:
+      - '9090:9090'
+    environment:
+      - EUREKA_SERVER_ADDRESS=serviceregistry:8762/eureka/
+      - CONFIG_SERVER_URL=configserver
+    depends_on:
+      configserver:
+        condition: service_healthy
+  paymentservice:
+    image: 'codergm/paymentservice:latest'
+    container_name: paymentservice
+    ports:
+      - '8081:8081'
+    environment:
+      - EUREKA_SERVER_ADDRESS=serviceregistry:8762/eureka/
+      - CONFIG_SERVER_URL=configserver
+      - DB_HOST=host.docker.internal
+    depends_on:
+      configserver:
+        condition: service_healthy
+  productservice:
+    image: 'codergm/productservice:latest'
+    container_name: productservice
+    ports:
+      - '8083:8083'
+    environment:
+      - EUREKA_SERVER_ADDRESS=serviceregistry:8762/eureka/
+      - CONFIG_SERVER_URL=configserver
+      - DB_HOST=host.docker.internal
+    depends_on:
+      configserver:
+        condition: service_healthy
+  orderservice:
+    image: 'codergm/orderservice:latest'
+    container_name: orderservice
+    ports:
+      - '8082:8082'
+    environment:
+      - EUREKA_SERVER_ADDRESS=serviceregistry:8762/eureka/
+      - CONFIG_SERVER_URL=configserver
+      - DB_HOST=host.docker.internal
+    depends_on:
+      configserver:
+        condition: service_healthy
