@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.codergm</groupId>
 	<artifactId>CloudGateway</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>CloudGateway</name>
 	<description>Online Shop Cloud Gateway</description>
 	<properties>
@@ -129,6 +129,19 @@
 							<artifactId>lombok</artifactId>
 						</exclude>
 					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<configuration>
+					<from>
+						<image>openjdk:11</image>
+					</from>
+					<to>
+						<image>registry.hub.docker.com/coder2gm/cloud-gateway</image>
+						<tags>${project.version}</tags>
+					</to>
 				</configuration>
 			</plugin>
 		</plugins>
